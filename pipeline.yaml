@@ -44,7 +44,7 @@ platforms:
     type: 'SecondType'
     buildEnabled: true
     platformProdName: openvpn-ca
-    buildDockerfile: avesha_openvpn_ca.ubuntu.dockerfile
+    buildDockerfile: avesha_openvpn_ca.dockerfile
     dockerBuildArgs: ""
     testDockerEnabled: true
     testDockerfile: ""
@@ -83,7 +83,7 @@ platforms:
     buildEnabled: true
     platformProdName: openvpn-client
     buildDockerfile: avesha_openvpn_client.dockerfile
-    dockerBuildArgs: ""
+    dockerBuildArgs: "--build-arg PLATFORM=amd64"
     testDockerEnabled: true
     testDockerfile: ""
     testDockerBuildArgs: ""
@@ -102,7 +102,7 @@ platforms:
     buildEnabled: true
     platformProdName: openvpn-client
     buildDockerfile: avesha_openvpn_client.dockerfile
-    dockerBuildArgs: ""
+    dockerBuildArgs: "--build-arg PLATFORM=arm32v7"
     testDockerEnabled: true
     testDockerfile: ""
     testDockerBuildArgs: ""
