@@ -76,7 +76,7 @@ platforms:
     maxDockerImageSize: 20000000
 
   - name: 'openvpn-client-amd64'
-    archName: 'amd64'
+    archName: 'alpine.amd64'
     node: any
     agent: 'avesha-jenkins-ubuntu:1.0.0'
     type: 'SecondType'
@@ -94,7 +94,7 @@ platforms:
     minDockerImageSize: 10000000
     maxDockerImageSize: 20000000
 
-  - name: 'openvpn-client-client-arm32v7'
+  - name: 'openvpn-client-arm32v7'
     archName: 'alpine.arm32v7'
     node: any
     agent: 'avesha-jenkins-ubuntu:1.0.0'
