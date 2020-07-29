@@ -1,0 +1,155 @@
+# pipeline.yaml
+
+# Identify platforms/artifacts that are to be built
+# Each platform is found by the 'name'
+# name - Name of platform/artifact that is being built.  Used
+#        to find the platform in collection.  Must bet set in
+#        setPipelineConfig call.
+# archName - OS that this is built for.  Will be appended to Docker image name
+# node - node for image to be built on
+# agent -
+# type -
+# buildEnabled - [true | false] determined is build will occur
+# platformProdName: Product name to use in docker image tag name
+# buildDockerfile: docker file to build image from
+#
+# dockerBuildArgs: "--build-arg MYARG1=test1 --build-arg MYARG2=test2"
+#     build args identified must match ARG vars in dockerfile
+#     All ARG vars in the dockerfile should have a default value.
+#     if ENVironemnt vars are needed for runtime, then they ENV
+#     in the docker file must set the default form the ARG var
+#         dockerBuildArgs: ""  # when there are none to pass
+#
+# testDockerFile: docker file to build test docker image from
+# testDockerBuildArgs: ""    - same format as dockerBuildArgs
+# testDockerRunArgs: "--rm"  - args to pass to docker run cmd when running test docker
+#
+# dockerBuildImageNameVer: auto
+# dockerBuildImageNameVerLatest: auto
+# dockerBuildImageNameVerRelease: auto
+#     auto - identifies that these are filled in during 'setPipelineConfig' call
+#          - future add support to identify a specific name instead
+#
+# The following sizes are used to validate that a docker build image falls
+# between a certain min & max size
+# minDockerImageSize: 700000
+# maxDockerImageSize: 800000
+#
+
+platforms:
+  - name: 'openvpn-ca'
+    archName: 'ubuntu.18.04'
+    node: any
+    agent: 'avesha-jenkins-ubuntu:1.0.0'
+    type: 'SecondType'
+    buildEnabled: true
+    platformProdName: openvpn-ca
+    buildDockerfile: avesha_openvpn_ca.ubuntu.dockerfile
+    dockerBuildArgs: ""
+    testDockerEnabled: true
+    testDockerfile: ""
+    testDockerBuildArgs: ""
+    testDockerRunArgs: ""
+    dockerBuildImageNameVer: auto
+    dockerBuildImageNameVerLatest: auto
+    dockerBuildImageNameVerRelease: auto
+    minDockerImageSize: 10000000
+    maxDockerImageSize: 20000000
+
+  - name: 'openvpn-server'
+    archName: 'ubuntu.18.04'
+    node: any
+    agent: 'avesha-jenkins-ubuntu:1.0.0'
+    type: 'SecondType'
+    buildEnabled: true
+    platformProdName: openvpn-server
+    buildDockerfile: avesha_openvpn_server.dockerfile
+    dockerBuildArgs: ""
+    testDockerEnabled: true
+    testDockerfile: ""
+    testDockerBuildArgs: ""
+    testDockerRunArgs: ""
+    dockerBuildImageNameVer: auto
+    dockerBuildImageNameVerLatest: auto
+    dockerBuildImageNameVerRelease: auto
+    minDockerImageSize: 10000000
+    maxDockerImageSize: 20000000
+
+  - name: 'openvpn-client-amd64'
+    archName: 'amd64'
+    node: any
+    agent: 'avesha-jenkins-ubuntu:1.0.0'
+    type: 'SecondType'
+    buildEnabled: true
+    platformProdName: openvpn-client
+    buildDockerfile: avesha_openvpn_client.dockerfile
+    dockerBuildArgs: ""
+    testDockerEnabled: true
+    testDockerfile: ""
+    testDockerBuildArgs: ""
+    testDockerRunArgs: ""
+    dockerBuildImageNameVer: auto
+    dockerBuildImageNameVerLatest: auto
+    dockerBuildImageNameVerRelease: auto
+    minDockerImageSize: 10000000
+    maxDockerImageSize: 20000000
+
+  - name: 'openvpn-client-client-arm32v7'
+    archName: 'alpine.arm32v7'
+    node: any
+    agent: 'avesha-jenkins-ubuntu:1.0.0'
+    type: 'SecondType'
+    buildEnabled: true
+    platformProdName: openvpn-client
+    buildDockerfile: avesha_openvpn_client.dockerfile
+    dockerBuildArgs: ""
+    testDockerEnabled: true
+    testDockerfile: ""
+    testDockerBuildArgs: ""
+    testDockerRunArgs: ""
+    dockerBuildImageNameVer: auto
+    dockerBuildImageNameVerLatest: auto
+    dockerBuildImageNameVerRelease: auto
+    minDockerImageSize: 5000000
+    maxDockerImageSize: 10000000
+
+# Product specific information
+aveshaProdName: openvpn
+aveshaProdVersionFile: OPENVPN_VERSION
+prodLabelImageDelete: flaskimagedelete
+
+# Image Name/version to be used for builds & releases
+# Format will be based on items set to true
+dockerImageNameUsePrefix: true
+dockerImageNameUseProdName: true
+dockerImageNameUseProdPlatform: true
+
+# Describe Versions
+dockerReleaseVersionUseDate: false
+dockerReleaseVersionUseAveshaVersion: true
+dockerReleaseVersionUseProdVersion: false
+dockerReleaseVersionUseCommitHash: false
+# NOTE: the branch name will not be used for 'master'
+dockerReleaseVersionUseBranchName: true
+
+# Build Version
+dockerBuildVersionUseDate: true
+dockerBuildVersionUseAveshaVersion: true
+dockerBuildVersionUseProdVersion: false
+dockerBuildVersionUseCommitHash: true
+# NOTE: the branch name will not be used for 'master'
+dockerBuildVersionUseBranchName: true
+
+
+# Avesha generic information
+aveshaDockerImageNamePrefix: avesha
+aveshaVersionFile: AVESHA_VERSION
+
+
+# Avesha Docker Registry Information
+aveshaDockerRegistryHost: 10.1.1.51
+aveshaDockerRegistryPushPort: 8200
+aveshaDockerRegistryPullPort: 8100
+
+# Sonarqube server informtion
+aveshaSonarServer: http://10.1.1.50:9000

@@ -1,0 +1,58 @@
+#!/bin/bash
+## @licence MIT <http://opensource.org/licenses/MIT>
+## @author Copyright (C) 2015 Robin Schneider <ypid@riseup.net>
+
+set -e
+
+if [ -z "$OPENVPN" ]; then
+    export OPENVPN="$PWD"
+fi
+if [ -z "$OPENVPN_SERVER" ]; then
+    echo "OPENVPN_SERVER name must be specified."
+    exit 1
+fi
+if ! source "$OPENVPN/$OPENVPN_SERVER/ovpn_env.sh"; then
+    echo "Could not source $OPENVPN/OPENVPN_SERVER/ovpn_env.sh."
+    exit 1
+fi
+
+TARGET="$OPENVPN/$OPENVPN_SERVER/server"
+if [ -n "$1" ]; then
+    TARGET="$1"
+fi
+mkdir -p "${TARGET}"
+
+## Ensure that no other keys then the one for the server is present.
+rm -rf "$TARGET/pki/private" "$TARGET/pki/issued"
+
+FILES=(
+    "pki/private/${OVPN_CN}.key"
+    "pki/issued/${OVPN_CN}.crt"
+    "pki/dh.pem"
+    "pki/${OVPN_CN}-ta.key"
+    "pki/ca.crt"
+)
+
+if [ -f "${OPENVPN}/pki/crl.pem" ]; then
+    FILES+=("pki/crl.pem")
+fi
+
+# Ensure the ccd directory exists, even if empty
+mkdir -p "ccd"
+
+# rsync isn't available to keep size down
+# cp --parents isn't in busybox version
+# hack the directory structure with tar
+tar cf - -C "${OPENVPN}" "${FILES[@]}" | tar xvf - -C "${TARGET}"
+
+# Avesha hack to get the directory structure right
+#  We are moving some files in a second tar cmd and are expected to be in
+#  ${OPENVPN}/${OPENVPN_SERVER} directory for the tar
+FILES=(
+    "openvpn.conf"
+    "ovpn_env.sh"
+    "ccd"
+)
+tar cf - -C "${OPENVPN}/${OPENVPN_SERVER}" "${FILES[@]}" | tar xvf - -C "${TARGET}"
+
+echo "Created the openvpn configuration for the server: $TARGET"

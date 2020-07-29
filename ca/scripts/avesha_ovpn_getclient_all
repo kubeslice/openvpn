@@ -1,0 +1,29 @@
+#!/bin/bash
+## @licence MIT <http://opensource.org/licenses/MIT>
+## @author Copyright (C) 2015 Robin Schneider <ypid@riseup.net>
+
+if [ -z "$OPENVPN" ]; then
+    export OPENVPN="$PWD"
+fi
+if [ -z "$OPENVPN_SERVER" ]; then
+    echo "OPENVPN_SERVER name must be specified."
+    exit 1
+fi
+if ! source "$OPENVPN/$OPENVPN_SERVER/ovpn_env.sh"; then
+    echo "Could not source $OPENVPN/OPENVPN_SERVER/ovpn_env.sh."
+    exit 1
+fi
+if [ -z "$EASYRSA_PKI" ]; then
+    export EASYRSA_PKI="$OPENVPN/pki"
+fi
+
+pushd "$EASYRSA_PKI" > /dev/null
+for name in issued/*.crt; do
+    name=${name%.crt}
+    name=${name#issued/}
+    if [ "$name" != "$OVPN_CN" ]; then
+        avesha_ovpn_getclient "$name" separated
+        avesha_ovpn_getclient "$name" combined-save
+    fi
+done
+popd > /dev/null
