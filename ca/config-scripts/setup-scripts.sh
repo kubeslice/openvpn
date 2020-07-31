@@ -26,7 +26,10 @@
 #      - Finish directory examples and use cases
 #      - Enhance scripts to validate parameters
 #      - Have set server/CA/port/image script or env file to set woking env for particular server instead of changing and sourcing file
-#
+#      - Handle Docker Pulling image to run
+#      - validate paths prior to use to not overwrite anything.
+#      - Condense cmd options into smaller subset so functions cmds are simpler
+#      - Add cmd and eval for scripts
 
 #
 # EXPORT vars for configuration
@@ -34,14 +37,25 @@
 #
 export OPENVPN_CA_DIR=~/please/set/path
 export OPENVPN="/etc/openvpn"
-export OPENVPN_SERVER="boston-edge-1.vpn.dev.aveshasystems.com"
-export OPENVPN_INTERNAL_PORT=11194
 export OPENVPN_IMAGE=set-openvpn-image
+export OPENVPN_INTERNAL_PORT=11194
+export OPENVPN_SERVER="boston-edge-3.vpn.dev.aveshasystems.com"
+export OPENVPN_SERVER_SUBNET=10.8.200.1
+export OPENVPN_SERVER_SUBNET_CIDR=24
+export OPENVPN_SERVER_SUBNET_MASK=255.255.255.0
+
+# Server Config Options For use based on above params:
 export OPENVPN_LOG_DRIVER="--log-driver=none"
-export OPENVPN_GENCONFIG_OPTS=""
+export OPENVPN_CONFIG_GENERAL_OPTS="-b -c -d -C AES-256-CBC -a SHA256"
+export OPENVPN_CONFIG_EXTRA_SERVER_OPTS='-E "resolv-retry infinite" -E "user nobody" -E "group nogroup" -E "persist-key" -E "persist-tun" -E "tls-auth ta.key 1"'
+export OPENVPN_CONFIG_EXTRA_CLIENT_OPTS='-e "ifconfig-pool-persist /etc/openvpn/ipp.txt" -e "topology subnet" -e "client-config-dir /etc/vpn/ccd" -e "crl-verify /etc/openvpn/crl.pem"'
+export OPENVPN_CONFIG_UDP_OPTS="-u  udp://$OPENVPN_SERVER:$OPENVPN_INTERNAL_PORT"
+export OPENVPN_CONFIG_SUBNET_OPTS="-s $OPENVPN_SERVER_SUBNET/$OPENVPN_SERVER_SUBNET_CIDR"    # -s 10.8.200.1/24
+export OPENVPN_CONFIG_PUSH_ROUTE_OPTS='-p "route $OPENVPN_SERVER_SUBNET $OPENVPN_SERVER_SUBNET_MASK"'
+export OPENVPN_CONFIG_ALL_OPTS="$OPENVPN_CONFIG_GENERAL_OPTS $OPENVPN_CONFIG_UDP_OPTS $OPENVPN_CONFIG_SUBNET_OPTS $OPENVPN_CONFIG_EXTRA_SERVER_OPTS $OPENVPN_CONFIG_EXTRA_CLIENT_OPTS $OPENVPN_CONFIG_PUSH_ROUTE_OPTS"
 
 # Server Options
-# -b -c -d -s 10.8.81.0/24 -u  udp://boston.vpn.dev.aveshasystems.com:443 -C AES-256-CBC -a SHA256 -e "ifconfig-pool-persist /etc/openvpn/ipp.txt" -e "topology subnet" -e "client-config-dir /etc/vpn/ccd" -e "crl-verify /etc/openvpn/crl.pem" -p "route 10.8.81.0 255.255.255.0" -E "resolv-retry infinite" -E "user nobody" -E "group nogroup" -E "persist-key" -E "persist-tun" -E "tls-auth ta.key 1"
+# -b -c -d -s 10.8.81.0/24 -u  udp://boston.vpn.dev.aveshasystems.com:443 -p "route 10.8.81.0 255.255.255.0" -C AES-256-CBC -a SHA256 -e "ifconfig-pool-persist /etc/openvpn/ipp.txt" -e "topology subnet" -e "client-config-dir /etc/vpn/ccd" -e "crl-verify /etc/openvpn/crl.pem" -E "resolv-retry infinite" -E "user nobody" -E "group nogroup" -E "persist-key" -E "persist-tun" -E "tls-auth ta.key 1"
 #                -b: Disable 'push block-outside-dns
 #                -c:  enable client to client
 #                -d: disable default route
@@ -74,7 +88,8 @@ echo "aveshaCaInitPkiCmd() - init CA Pki"
 #
 #docker run -e OPENVPN=/etc/openvpn/btest7.avesha.com -v ${OPENVPN_CA_DIR}:/etc/openvpn   ${OPENVPN_LOG_DRIVER} ${OPENVPN_IMAGE} avesha_ovpn_genconfig -u udp://btest7.avesha.com:11194
 #docker run ${OPENVPN_GENCONFIG_OPTS} ${OPENVPN_IMAGE} avesha_ovpn_genconfig -u udp://btest7.avesha.com:11194
-aveshaServerGenConfig() { docker run -e OPENVPN -e OPENVPN_SERVER -v ${OPENVPN_CA_DIR}:/etc/openvpn ${OPENVPN_LOG_DRIVER} ${OPENVPN_IMAGE} avesha_ovpn_genconfig -u udp://${OPENVPN_SERVER}:${OPENVPN_INTERNAL_PORT};}
+#aveshaServerGenConfig() { docker run -e OPENVPN -e OPENVPN_SERVER -v ${OPENVPN_CA_DIR}:/etc/openvpn ${OPENVPN_LOG_DRIVER} ${OPENVPN_IMAGE} avesha_ovpn_genconfig -u udp://${OPENVPN_SERVER}:${OPENVPN_INTERNAL_PORT};}
+aveshaServerGenConfig() { cmd="docker run -e OPENVPN -e OPENVPN_SERVER -v ${OPENVPN_CA_DIR}:/etc/openvpn ${OPENVPN_LOG_DRIVER} ${OPENVPN_IMAGE} avesha_ovpn_genconfig $OPENVPN_CONFIG_ALL_OPTS"; eval $cmd;}
 echo "aveshaServerGenConfig() - generate a server config"
 ##########   TO DO   ############ Add genconfig options for avesha setup
 
