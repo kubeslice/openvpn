@@ -110,7 +110,7 @@ tls-auth ta.key 1
     fi
 }
 
-dir="$OPENVPN/clients/$cn"
+dir="$OPENVPN/$OPENVPN_SERVER/clients/$cn"
 case "$parm" in
     "separated")
         mkdir -p "$dir"
