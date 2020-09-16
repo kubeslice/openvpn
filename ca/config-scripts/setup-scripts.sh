@@ -23,6 +23,9 @@
 #     - Customer-2-CA
 #
 #  TODO:
+#      - Add Routes for point to point ability  ie server side network exposed
+#      - Add Subent on Server Side to expose to clients config
+#      - Add ccd files for client networks and static IPs
 #      - Finish directory examples and use cases
 #      - Enhance scripts to validate parameters
 #      - Have set server/CA/port/image script or env file to set woking env for particular server instead of changing and sourcing file
@@ -30,6 +33,8 @@
 #      - validate paths prior to use to not overwrite anything.
 #      - Condense cmd options into smaller subset so functions cmds are simpler
 #      - Add cmd and eval for scripts
+#      - Do not re run init pki if ther eis already pki initialized  prompt or require force.
+#      - Need to handle cleint information & ccd per server.
 
 #
 # EXPORT vars for configuration
@@ -37,22 +42,34 @@
 #
 export OPENVPN_CA_DIR=~/please/set/path
 export OPENVPN="/etc/openvpn"
+# export OPENVPN_IMAGE=nexus.prod.aveshasystems.com/avesha/openvpn-ca.ubuntu.18.04:1.0.0
 export OPENVPN_IMAGE=set-openvpn-image
-export OPENVPN_INTERNAL_PORT=11194
-export OPENVPN_SERVER="boston-edge-3.vpn.dev.aveshasystems.com"
+export OPENVPN_CONN_PORT=11194
+export OPENVPN_SERVER="SETSERVERNAME.vpn.dev.aveshasystems.com"
 export OPENVPN_SERVER_SUBNET=10.8.200.1
 export OPENVPN_SERVER_SUBNET_CIDR=24
 export OPENVPN_SERVER_SUBNET_MASK=255.255.255.0
+
+# TOFIX if there is no routable network exposed by the server.
+export OPENVPN_SERVER_ROUTABLE_SUBNET=10.8.210.0
+export OPENVPN_SERVER_ROUTABLE_SUBNET_CIDR=24
+export OPENVPN_SERVER_ROUTABLE_SUBNET_MASK=255.255.255.0
+
+export OPENVPN_SERVER_CLIENT_ROUTABLE_SUBNET_OPTS="-r 10.33.12.0/24"
 
 # Server Config Options For use based on above params:
 export OPENVPN_LOG_DRIVER="--log-driver=none"
 export OPENVPN_CONFIG_GENERAL_OPTS="-b -c -d -C AES-256-CBC -a SHA256"
 export OPENVPN_CONFIG_EXTRA_SERVER_OPTS='-E "resolv-retry infinite" -E "user nobody" -E "group nogroup" -E "persist-key" -E "persist-tun" -E "tls-auth ta.key 1"'
-export OPENVPN_CONFIG_EXTRA_CLIENT_OPTS='-e "ifconfig-pool-persist /etc/openvpn/ipp.txt" -e "topology subnet" -e "client-config-dir /etc/vpn/ccd" -e "crl-verify /etc/openvpn/crl.pem"'
-export OPENVPN_CONFIG_UDP_OPTS="-u  udp://$OPENVPN_SERVER:$OPENVPN_INTERNAL_PORT"
+export OPENVPN_CONFIG_EXTRA_CLIENT_OPTS='-e "ifconfig-pool-persist /etc/openvpn/ipp.txt" -e "topology subnet" -e "client-config-dir /etc/openvpn/ccd" -e "crl-verify /etc/openvpn/crl.pem"'
+export OPENVPN_CONFIG_UDP_OPTS="-u  udp://$OPENVPN_SERVER:$OPENVPN_CONN_PORT"
 export OPENVPN_CONFIG_SUBNET_OPTS="-s $OPENVPN_SERVER_SUBNET/$OPENVPN_SERVER_SUBNET_CIDR"    # -s 10.8.200.1/24
 export OPENVPN_CONFIG_PUSH_ROUTE_OPTS='-p "route $OPENVPN_SERVER_SUBNET $OPENVPN_SERVER_SUBNET_MASK"'
 export OPENVPN_CONFIG_ALL_OPTS="$OPENVPN_CONFIG_GENERAL_OPTS $OPENVPN_CONFIG_UDP_OPTS $OPENVPN_CONFIG_SUBNET_OPTS $OPENVPN_CONFIG_EXTRA_SERVER_OPTS $OPENVPN_CONFIG_EXTRA_CLIENT_OPTS $OPENVPN_CONFIG_PUSH_ROUTE_OPTS"
+
+# FIX if there is no routable network exposed by the server.
+export OPENVPN_CONFIG_PUSH_SERVER_ROUTE_OPTS='-p "route $OPENVPN_SERVER_ROUTABLE_SUBNET $OPENVPN_SERVER_ROUTABLE_SUBNET_MASK"'
+export OPENVPN_CONFIG_SITE_TO_SITE_OPTS="$OPENVPN_CONFIG_PUSH_SERVER_ROUTE_OPTS $OPENVPN_SERVER_CLIENT_ROUTABLE_SUBNET_OPTS"
 
 # Server Options
 # -b -c -d -s 10.8.81.0/24 -u  udp://boston.vpn.dev.aveshasystems.com:443 -p "route 10.8.81.0 255.255.255.0" -C AES-256-CBC -a SHA256 -e "ifconfig-pool-persist /etc/openvpn/ipp.txt" -e "topology subnet" -e "client-config-dir /etc/vpn/ccd" -e "crl-verify /etc/openvpn/crl.pem" -E "resolv-retry infinite" -E "user nobody" -E "group nogroup" -E "persist-key" -E "persist-tun" -E "tls-auth ta.key 1"
@@ -92,6 +109,11 @@ echo "aveshaCaInitPkiCmd() - init CA Pki"
 aveshaServerGenConfig() { cmd="docker run --rm -e OPENVPN -e OPENVPN_SERVER -v ${OPENVPN_CA_DIR}:/etc/openvpn ${OPENVPN_LOG_DRIVER} ${OPENVPN_IMAGE} avesha_ovpn_genconfig $OPENVPN_CONFIG_ALL_OPTS"; eval $cmd;}
 echo "aveshaServerGenConfig() - generate a server config"
 ##########   TO DO   ############ Add genconfig options for avesha setup
+
+# Add the optipns to the config if you are running site to site mode versus a sewrver for multiple clients connecting.
+# To FIX:  will need to handle via conditional of site to site opts.  as server may want to always expose some networks to clients.
+aveshaServerGenConfigSiteToSite() { cmd="docker run --rm -e OPENVPN -e OPENVPN_SERVER -v ${OPENVPN_CA_DIR}:/etc/openvpn ${OPENVPN_LOG_DRIVER} ${OPENVPN_IMAGE} avesha_ovpn_genconfig $OPENVPN_CONFIG_SITE_TO_SITE_OPTS"; eval $cmd;}
+echo "aveshaServerGenConfigSiteToSite() - generate a server config"
 
 #
 # Renew/Update Server Cert
