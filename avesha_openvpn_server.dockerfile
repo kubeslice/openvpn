@@ -11,7 +11,7 @@ FROM kylemanna/openvpn:2.1.0
 #
 # Running server:
 #   Server by default will start automatically looking for /etc/openvpn.conf file.
-#     sudo docker run -v  ~/vpn/server-dir:/etc/openvpn -d -p 11196:11196/udp --cap-add=NET_ADMIN --name=vpntest1 --net host OPENVPNSERVERIMAGE
+#     sudo docker run -v  ~/vpn/server-dir:/etc/openvpn -d -p 11194:11194/udp --cap-add=NET_ADMIN --name=vpntest1 --net host OPENVPNSERVERIMAGE
 #
 #   To have server wait for /etc/openvpn.conf and start utilize the additional entrypoint:
 #      FILENAME  - config file to wait for
@@ -19,7 +19,7 @@ FROM kylemanna/openvpn:2.1.0
 #      CMD       - ovpn_run  (cmd to run when config appears)  For openvpn server this is always the script to run.
 #
 #     --entrypoint /usr/local/bin/waitForConfigToRunCmd.sh OPENVPNSERVERIMAGE /etc/openvpn/openvpn.conf 90 ovpn_run
-#     sudo docker run -v  ~/vpn/server:/etc/openvpn -d -p 11196:11196/udp --cap-add=NET_ADMIN --name=vpntest1 --net host --entrypoint /usr/local/bin/waitForConfigToRunCmd.sh OPENVPNSERVERIMAGE /etc/openvpn/openvpn.conf 90 ovpn_run
+#     sudo docker run -v  ~/vpn/server:/etc/openvpn -d -p 11194:11194/udp --cap-add=NET_ADMIN --name=vpntest1 --net host --entrypoint /usr/local/bin/waitForConfigToRunCmd.sh OPENVPNSERVERIMAGE /etc/openvpn/openvpn.conf 90 ovpn_run
 
 # Turn on ipv4 forwarding
 RUN apk add --update --no-cache  && \

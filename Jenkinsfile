@@ -146,15 +146,11 @@ pipeline {
 
 					// Tag and promote versioned image as latest and remove tagged image after successful push
 					// Only done if this is master.  There is no equivalent of latest images on non master branch
-					if (env.BRANCH_NAME == 'master' ) {
-					    echo "Promote Latest: Tag then push latest:"
-					    tagDockerImageForAveshaRegistry(artifactOne.dockerBuildImageNameVer,
-									    artifactOne.dockerBuildImageNameVerLatest)
-					    pushDockerImageToAveshaRegistry(artifactOne.dockerBuildImageNameVerLatest)
-					    removeJenkinsDockerImage(artifactOne.dockerBuildImageNameVerLatest, 'true')
-					} else {
-					    echo "NOT on 'master' branch,  NOT PUSHING latest Docker image:  " + artifactOne.dockerBuildImageNameVerLatest
-					} // if else
+					echo "Promote Latest: Tag then push latest:" + artifactOne.dockerBuildImageNameVerLatest
+					tagDockerImageForAveshaRegistry(artifactOne.dockerBuildImageNameVer,
+									artifactOne.dockerBuildImageNameVerLatest)
+					pushDockerImageToAveshaRegistry(artifactOne.dockerBuildImageNameVerLatest)
+					removeJenkinsDockerImage(artifactOne.dockerBuildImageNameVerLatest, 'true')
 				    } // if-else BRANCH is PR
 				} // script
 			    } // steps
@@ -307,15 +303,11 @@ pipeline {
 
 					// Tag and promote versioned image as latest and remove tagged image after successful push
 					// Only done if this is master.  There is no equivalent of latest images on non master branch
-					if (env.BRANCH_NAME == 'master' ) {
-					    echo "Promote Latest: Tag then push latest:"
-					    tagDockerImageForAveshaRegistry(artifactTwo.dockerBuildImageNameVer,
-									    artifactTwo.dockerBuildImageNameVerLatest)
-					    pushDockerImageToAveshaRegistry(artifactTwo.dockerBuildImageNameVerLatest)
-					    removeJenkinsDockerImage(artifactTwo.dockerBuildImageNameVerLatest, 'true')
-					} else {
-					    echo "NOT on 'master' branch,  NOT PUSHING latest Docker image:  " + artifactTwo.dockerBuildImageNameVerLatest
-					} // if else
+					echo "Promote Latest: Tag then push latest:" + artifactTwo.dockerBuildImageNameVerLatest
+					tagDockerImageForAveshaRegistry(artifactTwo.dockerBuildImageNameVer,
+									artifactTwo.dockerBuildImageNameVerLatest)
+					pushDockerImageToAveshaRegistry(artifactTwo.dockerBuildImageNameVerLatest)
+					removeJenkinsDockerImage(artifactTwo.dockerBuildImageNameVerLatest, 'true')
 				    } // if-else BRANCH is PR
 				} // script
 			    } // steps
@@ -470,15 +462,11 @@ pipeline {
 
 					// Tag and promote versioned image as latest and remove tagged image after successful push
 					// Only done if this is master.  There is no equivalent of latest images on non master branch
-					if (env.BRANCH_NAME == 'master' ) {
-					    echo "Promote Latest: Tag then push latest:"
-					    tagDockerImageForAveshaRegistry(artifactThree.dockerBuildImageNameVer,
-									    artifactThree.dockerBuildImageNameVerLatest)
-					    pushDockerImageToAveshaRegistry(artifactThree.dockerBuildImageNameVerLatest)
-					    removeJenkinsDockerImage(artifactThree.dockerBuildImageNameVerLatest, 'true')
-					} else {
-					    echo "NOT on 'master' branch,  NOT PUSHING latest Docker image:  " + artifactThree.dockerBuildImageNameVerLatest
-					} // if else
+					echo "Promote Latest: Tag then push latest:" + artifactThree.dockerBuildImageNameVerLatest
+					tagDockerImageForAveshaRegistry(artifactThree.dockerBuildImageNameVer,
+									artifactThree.dockerBuildImageNameVerLatest)
+					pushDockerImageToAveshaRegistry(artifactThree.dockerBuildImageNameVerLatest)
+					removeJenkinsDockerImage(artifactThree.dockerBuildImageNameVerLatest, 'true')
 				    } // if-else BRANCH is PR
 				} // script
 			    } // steps
@@ -635,15 +623,11 @@ pipeline {
 
 					// Tag and promote versioned image as latest and remove tagged image after successful push
 					// Only done if this is master.  There is no equivalent of latest images on non master branch
-					if (env.BRANCH_NAME == 'master' ) {
-					    echo "Promote Latest: Tag then push latest:"
-					    tagDockerImageForAveshaRegistry(artifactFour.dockerBuildImageNameVer,
-									    artifactFour.dockerBuildImageNameVerLatest)
-					    pushDockerImageToAveshaRegistry(artifactFour.dockerBuildImageNameVerLatest)
-					    removeJenkinsDockerImage(artifactFour.dockerBuildImageNameVerLatest, 'true')
-					} else {
-					    echo "NOT on 'master' branch,  NOT PUSHING latest Docker image:  " + artifactFour.dockerBuildImageNameVerLatest
-					} // if else
+					echo "Promote Latest: Tag then push latest:" + artifactFour.dockerBuildImageNameVerLatest
+					tagDockerImageForAveshaRegistry(artifactFour.dockerBuildImageNameVer,
+									artifactFour.dockerBuildImageNameVerLatest)
+					pushDockerImageToAveshaRegistry(artifactFour.dockerBuildImageNameVerLatest)
+					removeJenkinsDockerImage(artifactFour.dockerBuildImageNameVerLatest, 'true')
 				    } // if-else BRANCH is PR
 				} // script
 			    } // steps
