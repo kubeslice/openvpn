@@ -534,7 +534,7 @@ pipeline {
 			docker {
 			    // must identify the proper image to build the platform
 			    // TODO: find way to dynamically get this from pipeline.yaml
-			    image 'avesha-jenkins-ubuntu:1.0.0'
+			    image 'avesha-jenkins-cross-compile:1.0.0'
 			}
 		    }
 		    stages {
