@@ -1,4 +1,4 @@
-FROM kylemanna/openvpn:2.1.0
+FROM aveshadev/openvpn-server-base:latest
 
 # This docker file will be used for running the server in a container.
 #

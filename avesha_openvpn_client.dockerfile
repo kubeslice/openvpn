@@ -34,7 +34,7 @@
 # ####
 
 ARG PLATFORM
-FROM ${PLATFORM}/alpine
+FROM ${PLATFORM}/alpine:3.16.2
 
 RUN apk add --update --no-cache openvpn
 # Will need to add alpine GRE packages
