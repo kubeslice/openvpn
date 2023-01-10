@@ -5,4 +5,5 @@ dockerImagePipeline(
   dockerfile: 'avesha_openvpn_client.dockerfile',
   buildContext: '.',
   buildArguments: [PLATFORM:"amd64"]
+  
 )
