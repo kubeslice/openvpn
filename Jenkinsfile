@@ -1,4 +1,4 @@
-@Library('jenkins-library@opensource-release') _
+@Library('ml-library@enterprise-ml-release') _
 dockerImagePipeline(
   script: this,
   serviceCython: 'openvpn-server.alpine.amd64',
