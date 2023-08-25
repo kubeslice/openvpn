@@ -31,6 +31,12 @@ do
       timer=$((timer-1))
 done
 
+echo "File $configFile Found. Creating tun device"
+mkdir -p /dev/net
+if [ ! -c /dev/net/tun ]; then
+    mknod /dev/net/tun c 10 200
+fi
+
 # Exec the openvpn command so that ctrl-c will work when running from terminal
 echo "File $configFile Found. Running"
 exec "$@"
