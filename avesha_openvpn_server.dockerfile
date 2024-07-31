@@ -1,4 +1,5 @@
-FROM aveshadev/openvpn-server-base:latest
+FROM aveshatest/openvpn-server-base:sec-fix
+# this base was built from: https://github.com/kylemanna/docker-openvpn
 
 # This docker file will be used for running the server in a container.
 #
