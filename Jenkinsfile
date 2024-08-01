@@ -10,5 +10,4 @@ dockerImagePipeline(
   testArguments: 'pytest --alluredir=/workspace/allure-report test/tools/', 
   buildContext: '.',
   buildArguments: [PLATFORM:"amd64"]
-  
 )
