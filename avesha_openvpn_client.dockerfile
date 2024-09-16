@@ -33,8 +33,7 @@
 # TODO:  Add example of calling client docker with cmd line for all openvpn configuration parameters and utilizing files for crt/keys instead of an inline .ovpn file.
 # ####
 
-ARG PLATFORM
-FROM ${PLATFORM}/alpine:3.20.1
+FROM alpine:3.20.1
 
 RUN apk add --update --no-cache openvpn
 # Will need to add alpine GRE packages
