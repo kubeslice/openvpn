@@ -1,14 +1,12 @@
-@Library('ml-library@enterprise-ml-release') _
+@Library('jenkins-library@opensource-release-multiarch') _
 dockerImagePipeline(
   script: this,
-  serviceCython: 'openvpn-server.alpine.amd64',
-  service: 'openvpn-client.alpine.amd64',
-  dockerfile: 'avesha_openvpn_client.dockerfile',
-  dockerFileCython: 'avesha_openvpn_server.dockerfile',
-  runUnitTests: false,
+  services: ['openvpn-server.alpine','openvpn-client.alpine'],
+  dockerfiles: ['avesha_openvpn_server.dockerfile','avesha_openvpn_client.dockerfile'],
   pushed: true,
-  testArguments: 'pytest --alluredir=/workspace/allure-report test/tools/', 
-  buildContext: '.',
-  buildArguments: [PLATFORM:"amd64"]
+  buildArgumentsList: [
+    [ENV: 'production', PLATFORM: 'linux/arm64,linux/amd64'],
+    [ENV: 'production', PLATFORM: 'linux/arm64,linux/amd64']
+]
   
 )
